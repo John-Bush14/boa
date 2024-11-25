@@ -637,6 +637,86 @@ fn number_followed_by_dot() {
 }
 
 #[test]
+fn single_boolean_without_semicolon() {
+    let mut lexer = Lexer::from(&b"true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
+fn boolean_negation_spaces() {
+    let mut lexer = Lexer::from(&b"!true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::punctuator(Punctuator::Not),
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
+fn boolean_negation_no_spaces() {
+    let mut lexer = Lexer::from(&b"!true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::punctuator(Punctuator::Not),
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
+fn boolean_addition_no_spaces() {
+    let mut lexer = Lexer::from(&b"false&&true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::boolean_literal(false),
+        TokenKind::punctuator(Punctuator::BoolAnd),
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
+fn boolean_addition_no_spaces_left() {
+    let mut lexer = Lexer::from(&b"false&& true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::boolean_literal(false),
+        TokenKind::punctuator(Punctuator::BoolAnd),
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
+fn boolean_addition_no_spaces_right() {
+    let mut lexer = Lexer::from(&b"false &&true"[..]);
+    let interner = &mut Interner::default();
+
+    let expected = [
+        TokenKind::boolean_literal(false),
+        TokenKind::punctuator(Punctuator::BoolAnd),
+        TokenKind::boolean_literal(true)
+    ];
+
+    expect_tokens(&mut lexer, &expected, interner);
+}
+
+#[test]
 fn regex_literal() {
     let mut lexer = Lexer::from(&b"/(?:)/"[..]);
     let interner = &mut Interner::default();
